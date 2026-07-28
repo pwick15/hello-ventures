@@ -281,7 +281,10 @@ function renderDetailModal(venture) {
     detailModalBody.innerHTML = `
         <div class="detail-header">
             <div>
-                <h2 class="detail-title">${escapeHtml(venture.name)}</h2>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <h2 class="detail-title">${escapeHtml(venture.name)}</h2>
+                    <button class="btn btn-secondary" style="padding: 4px 12px; font-size: 12px; border-color: #ef4444; color: #ef4444;" onclick="deleteVenture(${venture.id})">Delete</button>
+                </div>
                 ${venture.website ? `<a href="${escapeHtml(venture.website)}" target="_blank" class="detail-website">${escapeHtml(venture.website)}</a>` : ''}
                 <div class="detail-meta">
                     <span>${escapeHtml(venture.sector || 'Unknown')}</span>
@@ -381,6 +384,23 @@ async function seedVentures() {
     } finally {
         seedBtn.disabled = false;
         seedBtn.textContent = originalText;
+    }
+}
+
+async function deleteVenture(id) {
+    if (!confirm('Are you sure you want to delete this venture?')) return;
+    
+    try {
+        const res = await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+            closeModal();
+            await fetchVentures();
+        } else {
+            alert('Failed to delete venture.');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Error deleting venture.');
     }
 }
 

@@ -43,6 +43,14 @@ async def get_venture_detail(venture_id: int):
         raise HTTPException(status_code=404, detail="Venture not found")
     return venture
 
+@app.delete("/api/ventures/{venture_id}")
+async def delete_venture_route(venture_id: int):
+    venture = await get_venture(venture_id)
+    if not venture:
+        raise HTTPException(status_code=404, detail="Venture not found")
+    await delete_venture(venture_id)
+    return {"status": "success", "message": "Venture deleted"}
+
 @app.post("/api/ventures/analyze")
 async def analyze_venture(req: AnalyzeRequest):
     print(f"\n🚀 Starting analysis for: {req.name}")
