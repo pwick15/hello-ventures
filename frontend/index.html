@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASME Ventures — AI Venture Screener</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-content">
+            <h1>ASME Ventures <span class="subtitle">— AI Venture Screener</span></h1>
+            <p class="description">AI-driven pipeline to identify, screen, and rank potential venture partners.</p>
+        </div>
+    </header>
+
+    <main class="app-main">
+        <div class="controls-bar">
+            <div class="controls-left">
+                <input type="text" id="searchInput" placeholder="Search by name or sector..." class="search-input">
+                <select id="sortSelect" class="sort-select">
+                    <option value="score_desc">Score ↓</option>
+                    <option value="score_asc">Score ↑</option>
+                    <option value="name_asc">Name A-Z</option>
+                    <option value="sector">Sector</option>
+                </select>
+            </div>
+            <div class="controls-right">
+                <button id="seedBtn" class="btn btn-secondary">Seed Ventures</button>
+                <button id="addVentureBtn" class="btn btn-primary">+ Add Venture</button>
+            </div>
+        </div>
+
+        <div id="loadingState" class="loading-state hidden">
+            <div class="spinner"></div>
+            <p>Loading ventures...</p>
+        </div>
+
+        <div id="emptyState" class="empty-state hidden">
+            <p>No ventures found. Try seeding data or adding a new venture.</p>
+        </div>
+
+        <div id="ventureGrid" class="venture-grid">
+            <!-- Cards injected via JS -->
+        </div>
+    </main>
+
+    <!-- Detail Modal -->
+    <div id="detailModal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content detail-modal-content">
+            <button class="close-btn" id="closeDetailBtn">&times;</button>
+            <div id="detailModalBody">
+                <!-- Content injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Venture Modal -->
+    <div id="addModal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content form-modal-content">
+            <button class="close-btn" id="closeAddBtn">&times;</button>
+            <h2>Add New Venture</h2>
+            <p class="form-help">Enter a venture to be analyzed by the AI pipeline.</p>
+            <form id="addVentureForm">
+                <div class="form-group">
+                    <label for="ventureName">Company Name *</label>
+                    <input type="text" id="ventureName" required placeholder="e.g. Acme Robotics">
+                </div>
+                <div class="form-group">
+                    <label for="ventureWebsite">Website URL *</label>
+                    <input type="url" id="ventureWebsite" required placeholder="https://example.com">
+                </div>
+                <div class="form-group">
+                    <label for="ventureDescription">Description (Optional)</label>
+                    <textarea id="ventureDescription" rows="3" placeholder="Brief description to help the AI..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelAddBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="submitVentureBtn">Analyze Venture</button>
+                </div>
+                <div id="addLoadingState" class="inline-loading hidden">
+                    <div class="spinner small"></div>
+                    <span>Analyzing venture (this may take 15-30s)...</span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

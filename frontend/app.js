@@ -1,0 +1,408 @@
+// Core State
+let ventures = [];
+let currentSortMode = 'score_desc';
+let currentSearchFilter = '';
+
+// DOM Elements
+const ventureGrid = document.getElementById('ventureGrid');
+const loadingState = document.getElementById('loadingState');
+const emptyState = document.getElementById('emptyState');
+const searchInput = document.getElementById('searchInput');
+const sortSelect = document.getElementById('sortSelect');
+const seedBtn = document.getElementById('seedBtn');
+const addVentureBtn = document.getElementById('addVentureBtn');
+
+const detailModal = document.getElementById('detailModal');
+const closeDetailBtn = document.getElementById('closeDetailBtn');
+const detailModalBody = document.getElementById('detailModalBody');
+
+const addModal = document.getElementById('addModal');
+const closeAddBtn = document.getElementById('closeAddBtn');
+const cancelAddBtn = document.getElementById('cancelAddBtn');
+const addVentureForm = document.getElementById('addVentureForm');
+const addLoadingState = document.getElementById('addLoadingState');
+const submitVentureBtn = document.getElementById('submitVentureBtn');
+
+// API Base URL (empty for relative to host)
+const API_BASE = '/api/ventures';
+
+// Score mappings
+const SCORE_COLORS = {
+    exceptional: '#10b981',
+    strong: '#06b6d4',
+    average: '#f59e0b',
+    weak: '#f97316',
+    poor: '#ef4444'
+};
+
+function getScoreColor(score) {
+    if (score >= 4.5) return SCORE_COLORS.exceptional;
+    if (score >= 3.5) return SCORE_COLORS.strong;
+    if (score >= 2.5) return SCORE_COLORS.average;
+    if (score >= 1.5) return SCORE_COLORS.weak;
+    return SCORE_COLORS.poor;
+}
+
+function getScoreLabel(score) {
+    if (score >= 4.5) return 'Exceptional';
+    if (score >= 3.5) return 'Strong';
+    if (score >= 2.5) return 'Average';
+    if (score >= 1.5) return 'Weak';
+    return 'Poor';
+}
+
+// Format sub-score names
+const SCORE_LABELS = {
+    technology_focus: 'Technology Focus',
+    reindustrialization: 'Reindustrialization',
+    engineering_ip: 'Engineering IP',
+    stage_fit: 'Stage Fit',
+    geographic_reach: 'Geographic Reach'
+};
+
+// Event Listeners
+document.addEventListener('DOMContentLoaded', fetchVentures);
+searchInput.addEventListener('input', (e) => {
+    currentSearchFilter = e.target.value.toLowerCase();
+    renderVentures();
+});
+sortSelect.addEventListener('change', (e) => {
+    currentSortMode = e.target.value;
+    sortVentures();
+    renderVentures();
+});
+
+seedBtn.addEventListener('click', seedVentures);
+addVentureBtn.addEventListener('click', openAddForm);
+
+closeDetailBtn.addEventListener('click', closeModal);
+closeAddBtn.addEventListener('click', closeModal);
+cancelAddBtn.addEventListener('click', closeModal);
+
+// Close modals on backdrop click
+document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+    backdrop.addEventListener('click', closeModal);
+});
+
+addVentureForm.addEventListener('submit', submitVenture);
+
+// Core Functions
+async function fetchVentures() {
+    showLoading(true);
+    try {
+        const response = await fetch(API_BASE);
+        if (response.ok) {
+            const data = await response.json();
+            ventures = data.ventures || [];
+            sortVentures();
+            renderVentures();
+        } else {
+            console.error('Failed to fetch ventures');
+            ventures = [];
+            renderVentures();
+        }
+    } catch (error) {
+        console.error('Error fetching ventures:', error);
+        ventures = [];
+        renderVentures();
+    } finally {
+        showLoading(false);
+    }
+}
+
+function sortVentures() {
+    ventures.sort((a, b) => {
+        // Pending items always go to the bottom unless sorting specifically puts them elsewhere, but usually we just handle missing scores
+        const scoreA = a.overall_score || 0;
+        const scoreB = b.overall_score || 0;
+        
+        switch (currentSortMode) {
+            case 'score_desc':
+                return scoreB - scoreA;
+            case 'score_asc':
+                return scoreA - scoreB;
+            case 'name_asc':
+                return a.name.localeCompare(b.name);
+            case 'sector':
+                const secA = a.sector || '';
+                const secB = b.sector || '';
+                return secA.localeCompare(secB);
+            default:
+                return 0;
+        }
+    });
+}
+
+function renderVentures() {
+    const filtered = ventures.filter(v => {
+        const searchStr = currentSearchFilter;
+        if (!searchStr) return true;
+        const nameMatch = v.name && v.name.toLowerCase().includes(searchStr);
+        const sectorMatch = v.sector && v.sector.toLowerCase().includes(searchStr);
+        return nameMatch || sectorMatch;
+    });
+
+    ventureGrid.innerHTML = '';
+
+    if (filtered.length === 0) {
+        if (ventures.length === 0) {
+            emptyState.classList.remove('hidden');
+        } else {
+            emptyState.classList.add('hidden'); // hidden because just filtered out
+            ventureGrid.innerHTML = '<p style="color:var(--text-secondary); grid-column: 1/-1; text-align: center;">No matches found.</p>';
+        }
+        return;
+    }
+
+    emptyState.classList.add('hidden');
+    filtered.forEach(venture => {
+        ventureGrid.appendChild(createCardElement(venture));
+    });
+}
+
+function createCardElement(venture) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.onclick = () => openDetail(venture.id);
+
+    const isPending = venture.status === 'pending' || !venture.overall_score;
+    let scoreHtml = '';
+    
+    if (isPending) {
+        scoreHtml = `<div class="score-badge" style="background-color: var(--text-muted)">Pending</div>`;
+    } else {
+        const score = parseFloat(venture.overall_score).toFixed(1);
+        const color = getScoreColor(score);
+        const label = getScoreLabel(score);
+        scoreHtml = `<div class="score-badge" style="background-color: ${color}">${score} — ${label}</div>`;
+    }
+
+    card.innerHTML = `
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">${escapeHtml(venture.name)}</h3>
+                <span class="badge sector-badge">${escapeHtml(venture.sector || 'Unknown Sector')}</span>
+            </div>
+            ${scoreHtml}
+        </div>
+        <div class="card-meta">
+            ${escapeHtml(venture.location || 'Unknown Location')} • Founded ${venture.founding_year || 'Unknown'} • ${escapeHtml(venture.funding_stage || 'Unknown Stage')}
+        </div>
+        <div class="card-rationale">
+            ${isPending ? 'Analysis in progress...' : escapeHtml(venture.rationale || 'No rationale available.')}
+        </div>
+    `;
+
+    return card;
+}
+
+async function openDetail(ventureId) {
+    const venture = ventures.find(v => v.id === ventureId);
+    if (!venture) return;
+
+    // Optional: Fetch latest detail if API provides more info
+    // const res = await fetch(`${API_BASE}/${ventureId}`);
+    // const fullVenture = await res.json();
+    
+    renderDetailModal(venture);
+    detailModal.classList.remove('hidden');
+}
+
+function renderDetailModal(venture) {
+    const isPending = venture.status === 'pending' || !venture.overall_score;
+    
+    let scoreHeaderHtml = '';
+    if (isPending) {
+        scoreHeaderHtml = `<div class="score-badge detail-score-large" style="background-color: var(--text-muted)">Pending Analysis</div>`;
+    } else {
+        const score = parseFloat(venture.overall_score).toFixed(1);
+        const color = getScoreColor(score);
+        const label = getScoreLabel(score);
+        scoreHeaderHtml = `<div class="score-badge detail-score-large" style="background-color: ${color}">${score} — ${label}</div>`;
+    }
+
+    let scoresHtml = '';
+    if (!isPending && venture.scores) {
+        let scoresObj = venture.scores;
+        if (typeof scoresObj === 'string') {
+            try { scoresObj = JSON.parse(scoresObj); } catch(e) {}
+        }
+        
+        for (const [key, val] of Object.entries(scoresObj)) {
+            const labelName = SCORE_LABELS[key] || key;
+            const scoreVal = parseInt(val) || 0;
+            const barColor = getScoreColor(scoreVal);
+            
+            let bars = '';
+            for(let i=1; i<=5; i++) {
+                if (i <= scoreVal) {
+                    bars += `<div class="subscore-bar-segment filled" style="background-color: ${barColor}"></div>`;
+                } else {
+                    bars += `<div class="subscore-bar-segment"></div>`;
+                }
+            }
+
+            scoresHtml += `
+                <div class="subscore-item">
+                    <div class="subscore-header">
+                        <span>${escapeHtml(labelName)}</span>
+                        <strong>${scoreVal}/5</strong>
+                    </div>
+                    <div class="subscore-bars">
+                        ${bars}
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    let strengthsHtml = '';
+    if (venture.strengths) {
+        let stArr = venture.strengths;
+        if (typeof stArr === 'string') {
+            try { stArr = JSON.parse(stArr); } catch(e) { stArr = [stArr]; }
+        }
+        if (Array.isArray(stArr) && stArr.length > 0) {
+            strengthsHtml = `<ul class="bullet-list">${stArr.map(s => `<li>${escapeHtml(s)}</li>`).join('')}</ul>`;
+        }
+    }
+
+    let weaknessesHtml = '';
+    if (venture.weaknesses) {
+        let wkArr = venture.weaknesses;
+        if (typeof wkArr === 'string') {
+            try { wkArr = JSON.parse(wkArr); } catch(e) { wkArr = [wkArr]; }
+        }
+        if (Array.isArray(wkArr) && wkArr.length > 0) {
+            weaknessesHtml = `<ul class="bullet-list">${wkArr.map(w => `<li>${escapeHtml(w)}</li>`).join('')}</ul>`;
+        }
+    }
+
+    detailModalBody.innerHTML = `
+        <div class="detail-header">
+            <div>
+                <h2 class="detail-title">${escapeHtml(venture.name)}</h2>
+                ${venture.website ? `<a href="${escapeHtml(venture.website)}" target="_blank" class="detail-website">${escapeHtml(venture.website)}</a>` : ''}
+                <div class="detail-meta">
+                    <span>${escapeHtml(venture.sector || 'Unknown')}</span>
+                    <span>${escapeHtml(venture.location || 'Unknown')}</span>
+                    <span>Team: ${venture.team_size || 'Unknown'}</span>
+                    <span>Stage: ${escapeHtml(venture.funding_stage || 'Unknown')}</span>
+                </div>
+            </div>
+            ${scoreHeaderHtml}
+        </div>
+        
+        ${isPending ? '<div class="detail-section"><p>This venture is currently being analyzed.</p></div>' : `
+            <div class="detail-section" style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                <div>
+                    <h3>Overall Rationale</h3>
+                    <p style="font-size: 15px;">${escapeHtml(venture.rationale || 'N/A')}</p>
+                </div>
+                <div>
+                    <h3>Scoring Breakdown</h3>
+                    ${scoresHtml}
+                </div>
+            </div>
+
+            <div class="detail-section" style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                <div>
+                    <h3>Strengths</h3>
+                    ${strengthsHtml || '<p class="text-muted">None identified.</p>'}
+                </div>
+                <div>
+                    <h3>Weaknesses / Risks</h3>
+                    ${weaknessesHtml || '<p class="text-muted">None identified.</p>'}
+                </div>
+            </div>
+        `}
+    `;
+}
+
+function openAddForm() {
+    addVentureForm.reset();
+    addLoadingState.classList.add('hidden');
+    submitVentureBtn.disabled = false;
+    addModal.classList.remove('hidden');
+}
+
+function closeModal() {
+    detailModal.classList.add('hidden');
+    addModal.classList.add('hidden');
+}
+
+async function submitVenture(e) {
+    e.preventDefault();
+    const name = document.getElementById('ventureName').value;
+    const website = document.getElementById('ventureWebsite').value;
+    const description = document.getElementById('ventureDescription').value;
+
+    submitVentureBtn.disabled = true;
+    addLoadingState.classList.remove('hidden');
+
+    try {
+        const res = await fetch(`${API_BASE}/analyze`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, website, description })
+        });
+        
+        if (res.ok) {
+            closeModal();
+            await fetchVentures();
+        } else {
+            alert('Error analyzing venture.');
+            submitVentureBtn.disabled = false;
+            addLoadingState.classList.add('hidden');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Network error analyzing venture.');
+        submitVentureBtn.disabled = false;
+        addLoadingState.classList.add('hidden');
+    }
+}
+
+async function seedVentures() {
+    seedBtn.disabled = true;
+    const originalText = seedBtn.textContent;
+    seedBtn.textContent = 'Seeding...';
+    
+    try {
+        const res = await fetch(`${API_BASE}/seed`, { method: 'POST' });
+        if (res.ok) {
+            await fetchVentures();
+        } else {
+            alert('Failed to seed ventures.');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Error seeding ventures.');
+    } finally {
+        seedBtn.disabled = false;
+        seedBtn.textContent = originalText;
+    }
+}
+
+// Utils
+function showLoading(show) {
+    if (show) {
+        loadingState.classList.remove('hidden');
+        ventureGrid.classList.add('hidden');
+        emptyState.classList.add('hidden');
+    } else {
+        loadingState.classList.add('hidden');
+        ventureGrid.classList.remove('hidden');
+    }
+}
+
+function escapeHtml(unsafe) {
+    if (!unsafe) return '';
+    return unsafe
+         .toString()
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+}
