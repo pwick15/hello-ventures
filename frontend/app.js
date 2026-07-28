@@ -322,10 +322,17 @@ function renderDetailModal(venture) {
             <div class="detail-section" style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
                 <h3>Deep Dive: Assessment Data</h3>
                 <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
-                    Raw extracted data used to generate the rationale and scores.
+                    Structured data extracted by the AI model.
                 </p>
-                <div style="background: var(--bg-dark); padding: 16px; border-radius: 8px; font-size: 14px; font-family: monospace; white-space: pre-wrap; color: var(--text-secondary); max-height: 300px; overflow-y: auto;">
-                    ${venture.enrichment_data ? escapeHtml(typeof venture.enrichment_data === 'string' ? venture.enrichment_data : JSON.stringify(venture.enrichment_data, null, 2)) : 'No raw data available.'}
+                <div style="background: var(--bg-dark); padding: 16px; border-radius: 8px; font-size: 14px; font-family: monospace; white-space: pre-wrap; color: var(--text-secondary); max-height: 200px; overflow-y: auto; margin-bottom: 16px;">
+                    ${venture.enrichment_data ? escapeHtml(typeof venture.enrichment_data === 'string' ? venture.enrichment_data : JSON.stringify(venture.enrichment_data, null, 2)) : 'No structured data available.'}
+                </div>
+                
+                <button class="btn btn-secondary" onclick="document.getElementById('rawTavilyData-${venture.id}').classList.toggle('hidden')" style="width: 100%; margin-bottom: 12px; font-size: 14px;">
+                    👁️ Reveal Raw Tavily Search Data
+                </button>
+                <div id="rawTavilyData-${venture.id}" class="hidden" style="background: #111827; border: 1px solid #374151; padding: 16px; border-radius: 8px; font-size: 12px; font-family: monospace; white-space: pre-wrap; color: #9ca3af; max-height: 400px; overflow-y: auto;">
+                    ${venture.enrichment_data && venture.enrichment_data.raw_tavily_data ? escapeHtml(venture.enrichment_data.raw_tavily_data) : 'No raw search data available. (You may need to re-analyze this venture).'}
                 </div>
             </div>
         `}

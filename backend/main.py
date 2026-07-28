@@ -103,6 +103,7 @@ async def analyze_venture(req: AnalyzeRequest):
                 "key_products": result.get("key_products"),
                 "notable_achievements": result.get("notable_achievements"),
                 "enrichment_rounds": result.get("enrichment_round", 1),
+                "raw_tavily_data": result.get("raw_enrichment", "")
             }),
             scores=json.dumps(result.get("scores")),
             overall_score=result.get("overall_score"),
