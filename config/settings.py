@@ -8,7 +8,7 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 
 # --- Model ---
-GEMINI_MODEL = "gemini-2.5-flash"
+GEMINI_MODEL = "gemini-3.6-flash"
 
 # --- Database ---
 DATABASE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "backend", "ventures.db")
