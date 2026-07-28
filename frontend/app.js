@@ -28,16 +28,18 @@ const API_BASE = '/api/ventures';
 
 // Score mappings
 const SCORE_COLORS = {
-    exceptional: '#10b981',
-    strong: '#06b6d4',
-    average: '#f59e0b',
-    weak: '#f97316',
-    poor: '#ef4444'
+    exceptional: '#10b981', // green
+    strong: '#06b6d4',      // cyan
+    promising: '#8b5cf6',   // purple
+    average: '#f59e0b',     // yellow
+    weak: '#f97316',        // orange
+    poor: '#ef4444'         // red
 };
 
 function getScoreColor(score) {
     if (score >= 4.5) return SCORE_COLORS.exceptional;
-    if (score >= 3.5) return SCORE_COLORS.strong;
+    if (score >= 4.0) return SCORE_COLORS.strong;
+    if (score >= 3.5) return SCORE_COLORS.promising;
     if (score >= 2.5) return SCORE_COLORS.average;
     if (score >= 1.5) return SCORE_COLORS.weak;
     return SCORE_COLORS.poor;
@@ -45,7 +47,8 @@ function getScoreColor(score) {
 
 function getScoreLabel(score) {
     if (score >= 4.5) return 'Exceptional';
-    if (score >= 3.5) return 'Strong';
+    if (score >= 4.0) return 'Strong';
+    if (score >= 3.5) return 'Promising';
     if (score >= 2.5) return 'Average';
     if (score >= 1.5) return 'Weak';
     return 'Poor';

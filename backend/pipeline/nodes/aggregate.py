@@ -15,7 +15,18 @@ async def aggregate_node(state: VentureState) -> dict:
     overall = sum(scores[k] * SCORING_WEIGHTS[k] for k in SCORING_WEIGHTS)
     overall = round(overall, 2)
     
-    score_label = SCORE_LABELS.get(round(overall), "Average")
+    if overall >= 4.5:
+        score_label = "Exceptional"
+    elif overall >= 4.0:
+        score_label = "Strong"
+    elif overall >= 3.5:
+        score_label = "Promising"
+    elif overall >= 2.5:
+        score_label = "Average"
+    elif overall >= 1.5:
+        score_label = "Weak"
+    else:
+        score_label = "Poor"
     
     scores_summary = "\n".join(
         f"  - {k.replace('_', ' ').title()}: {v}/5" for k, v in scores.items()
