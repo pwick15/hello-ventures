@@ -78,3 +78,8 @@ async def update_venture(venture_id: int, **kwargs):
     async with aiosqlite.connect(DATABASE_PATH) as db:
         await db.execute(f'UPDATE ventures SET {set_clause} WHERE id = ?', tuple(values))
         await db.commit()
+
+async def delete_venture(venture_id: int):
+    async with aiosqlite.connect(DATABASE_PATH) as db:
+        await db.execute('DELETE FROM ventures WHERE id = ?', (venture_id,))
+        await db.commit()

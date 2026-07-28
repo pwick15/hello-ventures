@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from typing import Optional
 
 from config.settings import SCORING_WEIGHTS, MAX_ENRICHMENT_ROUNDS
-from backend.database import init_db, get_all_ventures, get_venture, create_venture, update_venture
+from backend.database import init_db, get_all_ventures, get_venture, create_venture, update_venture, delete_venture
 from backend.pipeline.graph import pipeline
 from backend.seed_data import SEED_VENTURES
 
@@ -45,6 +45,7 @@ async def get_venture_detail(venture_id: int):
 
 @app.post("/api/ventures/analyze")
 async def analyze_venture(req: AnalyzeRequest):
+    print(f"\n🚀 Starting analysis for: {req.name}")
     # Create venture in DB
     venture = await create_venture(req.name, req.website, req.description)
     
@@ -103,6 +104,7 @@ async def analyze_venture(req: AnalyzeRequest):
             status=result.get("status", "scored"),
         )
         
+        print(f"✅ Completed analysis for {req.name} | Score: {result.get('overall_score')}/5.0")
         return await get_venture(venture["id"])
     except Exception as e:
         await update_venture(venture["id"], status="error")
@@ -111,16 +113,42 @@ async def analyze_venture(req: AnalyzeRequest):
 @app.post("/api/ventures/seed")
 async def seed_ventures():
     """Seed pre-curated ventures and run pipeline on all."""
+    print("\n🌱 Starting batch seed process...")
     results = []
-    for v in SEED_VENTURES:
-        existing = await get_all_ventures()
-        if any(ev["name"] == v["name"] for ev in existing):
-            continue
-        try:
-            result = await analyze_venture(AnalyzeRequest(**v))
-            results.append({"name": v["name"], "status": "success"})
-        except Exception as e:
-            results.append({"name": v["name"], "status": "error", "error": str(e)})
+    
+    existing = await get_all_ventures()
+    existing_map = {v["name"]: v for v in existing}
+    
+    for idx, v in enumerate(SEED_VENTURES, 1):
+        if v["name"] in existing_map:
+            ex_v = existing_map[v["name"]]
+            if ex_v["status"] == "scored":
+                print(f"⏭️  [{idx}/{len(SEED_VENTURES)}] Skipping {v['name']} (already fully processed)")
+                continue
+            else:
+                print(f"🗑️  [{idx}/{len(SEED_VENTURES)}] Removing previous failed/incomplete run for {v['name']}...")
+                await delete_venture(ex_v["id"])
+                
+        print(f"⏳ [{idx}/{len(SEED_VENTURES)}] Processing {v['name']}...")
+        
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                result = await analyze_venture(AnalyzeRequest(**v))
+                results.append({"name": v["name"], "status": "success"})
+                break
+            except Exception as e:
+                err_str = str(e)
+                if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
+                    wait_time = 22  # Wait 22 seconds to clear the rate limit window
+                    print(f"⚠️  Rate limit hit for {v['name']}. Waiting {wait_time}s before retry (Attempt {attempt+1}/{max_retries})...")
+                    await asyncio.sleep(wait_time)
+                else:
+                    print(f"❌ Error processing {v['name']}: {err_str}")
+                    results.append({"name": v["name"], "status": "error", "error": err_str})
+                    break
+            
+    print("✨ Seeding complete!\n")
     return {"results": results}
 
 @app.get("/api/config/weights")
