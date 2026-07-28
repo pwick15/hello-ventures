@@ -1,11 +1,9 @@
 SEED_VENTURES = [
     {"name": "Desktop Metal", "website": "https://www.desktopmetal.com", "description": "Mass production metal 3D printing systems for manufacturing"},
-    {"name": "Machina Labs", "website": "https://www.machinalabs.ai", "description": "AI-driven robotic sheet metal forming for aerospace and defense"},
     {"name": "Velo3D", "website": "https://www.velo3d.com", "description": "Advanced metal additive manufacturing without support structures"},
     {"name": "Dandelion Energy", "website": "https://dandelionenergy.com", "description": "Residential geothermal heating and cooling systems"},
     {"name": "Miso Robotics", "website": "https://misorobotics.com", "description": "AI-powered robotic kitchen assistants for food service"},
     {"name": "Gecko Robotics", "website": "https://www.geckorobotics.com", "description": "Wall-climbing robots for industrial infrastructure inspection"},
-    {"name": "Hadrian", "website": "https://www.hadrian.co", "description": "Autonomous precision manufacturing for aerospace parts"},
     {"name": "Bright Machines", "website": "https://www.brightmachines.com", "description": "Software-defined factory automation and intelligent assembly"},
     {"name": "Relativity Space", "website": "https://www.relativityspace.com", "description": "3D-printed rockets and autonomous rocket factory"},
     {"name": "Redwood Materials", "website": "https://www.redwoodmaterials.com", "description": "Battery recycling and circular supply chain for materials"},

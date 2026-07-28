@@ -318,6 +318,16 @@ function renderDetailModal(venture) {
                     ${weaknessesHtml || '<p class="text-muted">None identified.</p>'}
                 </div>
             </div>
+            
+            <div class="detail-section" style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
+                <h3>Deep Dive: Assessment Data</h3>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+                    Raw extracted data used to generate the rationale and scores.
+                </p>
+                <div style="background: var(--bg-dark); padding: 16px; border-radius: 8px; font-size: 14px; font-family: monospace; white-space: pre-wrap; color: var(--text-secondary); max-height: 300px; overflow-y: auto;">
+                    ${venture.enrichment_data ? escapeHtml(typeof venture.enrichment_data === 'string' ? venture.enrichment_data : JSON.stringify(venture.enrichment_data, null, 2)) : 'No raw data available.'}
+                </div>
+            </div>
         `}
     `;
 }
