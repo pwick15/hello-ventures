@@ -5,10 +5,16 @@ load_dotenv()
 
 # --- API Keys ---
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 
-# --- Model ---
+# --- LLM Provider Selection ---
+# Options: "gemini" or "openai"
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "openai")
+
+# --- Models ---
 GEMINI_MODEL = "gemini-3.6-flash"
+OPENAI_MODEL = "gpt-5.4-mini"
 
 # --- Database ---
 DATABASE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "backend", "ventures.db")

@@ -1,8 +1,9 @@
 from pydantic import BaseModel, Field
 from typing import Optional
-from langchain_google_genai import ChatGoogleGenerativeAI
-from config.settings import GEMINI_API_KEY, GEMINI_MODEL
+from typing import Optional
 from backend.pipeline.state import VentureState
+from backend.pipeline.prompts import EXTRACTION_PROMPT
+from backend.pipeline.llm import get_llm
 from backend.pipeline.prompts import EXTRACTION_PROMPT
 
 class VentureSignals(BaseModel):
@@ -17,10 +18,7 @@ class VentureSignals(BaseModel):
     notable_achievements: Optional[list[str]] = Field(default_factory=list, description="Significant milestones")
 
 async def extract_node(state: VentureState) -> dict:
-    llm = ChatGoogleGenerativeAI(
-        model=GEMINI_MODEL,
-        google_api_key=GEMINI_API_KEY,
-    ).with_structured_output(VentureSignals)
+    llm = get_llm(VentureSignals)
     
     signals = await llm.ainvoke(EXTRACTION_PROMPT.format(
         name=state["name"],

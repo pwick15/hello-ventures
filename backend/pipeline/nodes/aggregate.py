@@ -1,7 +1,8 @@
 from pydantic import BaseModel, Field
-from langchain_google_genai import ChatGoogleGenerativeAI
-from config.settings import GEMINI_API_KEY, GEMINI_MODEL, SCORING_WEIGHTS, SCORE_LABELS
+from config.settings import SCORING_WEIGHTS, SCORE_LABELS
 from backend.pipeline.state import VentureState
+from backend.pipeline.prompts import RATIONALE_PROMPT
+from backend.pipeline.llm import get_llm
 from backend.pipeline.prompts import RATIONALE_PROMPT
 
 class VentureRationale(BaseModel):
@@ -20,10 +21,7 @@ async def aggregate_node(state: VentureState) -> dict:
         f"  - {k.replace('_', ' ').title()}: {v}/5" for k, v in scores.items()
     )
     
-    llm = ChatGoogleGenerativeAI(
-        model=GEMINI_MODEL,
-        google_api_key=GEMINI_API_KEY,
-    ).with_structured_output(VentureRationale)
+    llm = get_llm(VentureRationale)
     
     result = await llm.ainvoke(RATIONALE_PROMPT.format(
         name=state["name"],

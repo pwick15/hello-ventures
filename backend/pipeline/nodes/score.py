@@ -1,7 +1,8 @@
 from pydantic import BaseModel, Field
-from langchain_google_genai import ChatGoogleGenerativeAI
-from config.settings import GEMINI_API_KEY, GEMINI_MODEL, ASME_CONTEXT
+from config.settings import ASME_CONTEXT
 from backend.pipeline.state import VentureState
+from backend.pipeline.prompts import SCORING_PROMPT
+from backend.pipeline.llm import get_llm
 from backend.pipeline.prompts import SCORING_PROMPT
 
 class VentureScores(BaseModel):
@@ -12,10 +13,7 @@ class VentureScores(BaseModel):
     geographic_reach: int = Field(description="1-5: Global/multi-market presence")
 
 async def score_node(state: VentureState) -> dict:
-    llm = ChatGoogleGenerativeAI(
-        model=GEMINI_MODEL,
-        google_api_key=GEMINI_API_KEY,
-    ).with_structured_output(VentureScores)
+    llm = get_llm(VentureScores)
     
     venture_data = f"""Name: {state['name']}
 Website: {state.get('website', 'N/A')}

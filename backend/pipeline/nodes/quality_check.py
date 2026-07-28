@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
-from langchain_google_genai import ChatGoogleGenerativeAI
-from config.settings import GEMINI_API_KEY, GEMINI_MODEL
 from backend.pipeline.state import VentureState
+from backend.pipeline.prompts import QUALITY_CHECK_PROMPT
+from backend.pipeline.llm import get_llm
 from backend.pipeline.prompts import QUALITY_CHECK_PROMPT
 
 class QualityAssessment(BaseModel):
@@ -10,10 +10,7 @@ class QualityAssessment(BaseModel):
     confidence: str = Field(description="low, medium, or high — confidence in the data quality")
 
 async def quality_check_node(state: VentureState) -> dict:
-    llm = ChatGoogleGenerativeAI(
-        model=GEMINI_MODEL,
-        google_api_key=GEMINI_API_KEY,
-    ).with_structured_output(QualityAssessment)
+    llm = get_llm(QualityAssessment)
     
     assessment = await llm.ainvoke(QUALITY_CHECK_PROMPT.format(
         name=state["name"],
