@@ -711,8 +711,7 @@ input:focus, select:focus, textarea:focus {
     color: var(--accent);
 }
 
-/* Blur effect for Driver.js overlay */
+/* Darken the Driver.js overlay instead of blur (browsers blur the SVG cutout hole if backdrop-filter is used) */
 .driver-overlay {
-    backdrop-filter: blur(8px) !important;
-    -webkit-backdrop-filter: blur(8px) !important;
+    opacity: 0.85 !important;
 }
