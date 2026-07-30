@@ -39,7 +39,7 @@ const isLocal =
   window.location.hostname === "127.0.0.1";
 const API_BASE = isLocal
   ? "/api/ventures"
-  : "https://asme-ventures-backend-963557792569.us-central1.run.app";
+  : "https://asme-ventures-backend-963557792569.us-central1.run.app/api/ventures";
 
 // Score mappings
 const SCORE_COLORS = {
