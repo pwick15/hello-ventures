@@ -17,7 +17,7 @@ GEMINI_MODEL = "gemini-3.6-flash"
 OPENAI_MODEL = "gpt-5.4-mini"
 
 # --- Database ---
-DATABASE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "backend", "ventures.db")
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@localhost:5432/dbname")
 
 # --- Scoring Scale: 1-5 ---
 # 1 = Poor alignment | 2 = Weak | 3 = Average | 4 = Strong | 5 = Exceptional

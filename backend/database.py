@@ -1,13 +1,21 @@
-import sqlite3
 import json
-import aiosqlite
-from config.settings import DATABASE_PATH
+import asyncpg
+from config.settings import DATABASE_URL
+
+pool = None
+
+async def get_pool():
+    global pool
+    if not pool:
+        pool = await asyncpg.create_pool(DATABASE_URL)
+    return pool
 
 async def init_db():
-    async with aiosqlite.connect(DATABASE_PATH) as db:
-        await db.execute('''
+    p = await get_pool()
+    async with p.acquire() as conn:
+        await conn.execute('''
             CREATE TABLE IF NOT EXISTS ventures (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id SERIAL PRIMARY KEY,
                 name TEXT NOT NULL,
                 website TEXT,
                 description TEXT,
@@ -27,12 +35,11 @@ async def init_db():
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
-        await db.commit()
 
-def _parse_json_fields(row):
-    if not row:
+def _parse_json_fields(record):
+    if not record:
         return None
-    res = dict(row)
+    res = dict(record)
     for field in ["enrichment_data", "scores", "strengths", "weaknesses"]:
         if res.get(field):
             try:
@@ -42,44 +49,52 @@ def _parse_json_fields(row):
     return res
 
 async def get_all_ventures():
-    async with aiosqlite.connect(DATABASE_PATH) as db:
-        db.row_factory = aiosqlite.Row
-        async with db.execute('SELECT * FROM ventures ORDER BY overall_score DESC NULLS LAST') as cursor:
-            rows = await cursor.fetchall()
-            return [_parse_json_fields(row) for row in rows]
+    p = await get_pool()
+    async with p.acquire() as conn:
+        rows = await conn.fetch('SELECT * FROM ventures ORDER BY overall_score DESC NULLS LAST')
+        return [_parse_json_fields(row) for row in rows]
 
 async def get_venture(venture_id: int):
-    async with aiosqlite.connect(DATABASE_PATH) as db:
-        db.row_factory = aiosqlite.Row
-        async with db.execute('SELECT * FROM ventures WHERE id = ?', (venture_id,)) as cursor:
-            row = await cursor.fetchone()
-            return _parse_json_fields(row)
+    p = await get_pool()
+    async with p.acquire() as conn:
+        row = await conn.fetchrow('SELECT * FROM ventures WHERE id = $1', venture_id)
+        return _parse_json_fields(row)
 
 async def create_venture(name: str, website: str, description: str = None):
-    async with aiosqlite.connect(DATABASE_PATH) as db:
-        db.row_factory = aiosqlite.Row
-        cursor = await db.execute(
-            'INSERT INTO ventures (name, website, description) VALUES (?, ?, ?) RETURNING *',
-            (name, website, description)
+    p = await get_pool()
+    async with p.acquire() as conn:
+        row = await conn.fetchrow(
+            'INSERT INTO ventures (name, website, description) VALUES ($1, $2, $3) RETURNING *',
+            name, website, description
         )
-        row = await cursor.fetchone()
-        await db.commit()
         return _parse_json_fields(row)
 
 async def update_venture(venture_id: int, **kwargs):
     if not kwargs:
         return
     
-    set_clause = ", ".join([f"{k} = ?" for k in kwargs.keys()])
+    set_clauses = []
+    values = []
+    for i, (k, v) in enumerate(kwargs.items(), start=1):
+        set_clauses.append(f"{k} = ${i}")
+        # asyncpg expects dict/list to be passed as JSON strings if the column is TEXT,
+        # so if the user passes a dict, we dump it. The previous code didn't dump,
+        # wait, let's just make sure it dumps.
+        if isinstance(v, (dict, list)):
+            values.append(json.dumps(v))
+        else:
+            values.append(v)
+            
+    set_clause = ", ".join(set_clauses)
     set_clause += ", updated_at = CURRENT_TIMESTAMP"
-    values = list(kwargs.values())
     values.append(venture_id)
+    venture_id_idx = len(values)
     
-    async with aiosqlite.connect(DATABASE_PATH) as db:
-        await db.execute(f'UPDATE ventures SET {set_clause} WHERE id = ?', tuple(values))
-        await db.commit()
+    p = await get_pool()
+    async with p.acquire() as conn:
+        await conn.execute(f'UPDATE ventures SET {set_clause} WHERE id = ${venture_id_idx}', *values)
 
 async def delete_venture(venture_id: int):
-    async with aiosqlite.connect(DATABASE_PATH) as db:
-        await db.execute('DELETE FROM ventures WHERE id = ?', (venture_id,))
-        await db.commit()
+    p = await get_pool()
+    async with p.acquire() as conn:
+        await conn.execute('DELETE FROM ventures WHERE id = $1', venture_id)
