@@ -122,24 +122,33 @@ const tour = driver({
           </div>
           <div class="flow-graphic">
             <div class="flow-step">
-              <span class="icon">
+              <span class="icon" style="margin-bottom: auto;">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
               </span>
-              <span class="text">1. Input URL</span>
+              <span class="text">1. Provide<br>Candidate</span>
             </div>
-            <div class="flow-arrow">→</div>
-            <div class="flow-step">
-              <span class="icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
-              </span>
-              <span class="text">2. AI Researches & Grades</span>
+            <div class="flow-arrow" style="align-self: center;">→</div>
+            
+            <div class="flow-step ai-bubble">
+              <div class="ai-header">
+                <span class="icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+                </span>
+                <span>2. AI Analysis</span>
+              </div>
+              <ul class="ai-tasks">
+                <li>Searches the web</li>
+                <li>Condenses information</li>
+                <li>Analyzes & grades</li>
+              </ul>
             </div>
-            <div class="flow-arrow">→</div>
+            
+            <div class="flow-arrow" style="align-self: center;">→</div>
             <div class="flow-step highlight">
-              <span class="icon">
+              <span class="icon" style="margin-bottom: auto;">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
               </span>
-              <span class="text">3. Human Review</span>
+              <span class="text">3. Human<br>Review</span>
             </div>
           </div>
         `,

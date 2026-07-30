@@ -659,3 +659,60 @@ input:focus, select:focus, textarea:focus {
     font-size: 20px;
     padding: 0 8px;
 }
+
+.ai-bubble {
+    background: rgba(79, 140, 255, 0.08);
+    border: 1px solid rgba(79, 140, 255, 0.3);
+    border-radius: 8px;
+    padding: 12px;
+    align-items: stretch !important;
+    gap: 8px !important;
+    flex: 1.6 !important;
+}
+
+.ai-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.ai-header .icon {
+    width: 24px;
+    height: 24px;
+    background: transparent;
+    border: none;
+}
+
+.ai-tasks {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-align: left;
+}
+
+.ai-tasks li {
+    margin-bottom: 4px;
+    padding-left: 12px;
+    position: relative;
+    line-height: 1.3;
+}
+
+.ai-tasks li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+}
+
+/* Blur effect for Driver.js overlay */
+.driver-overlay {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+}
