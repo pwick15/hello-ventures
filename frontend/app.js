@@ -114,23 +114,31 @@ const tour = driver({
         title: 'Augmenting Venture Intelligence',
         description: `
           <div style="margin-bottom: 16px;">
-            Imagine having a venture analyst running 24 hours a day, scanning through hundreds of organizations autonomously. 
+            By automating the initial scanning, identification, and screening phases, human decision-makers can spend more time reviewing high-quality candidates instead of sifting through the noise.
             <br><br>
-            This AI agent doesn't replace human decision-making—it drastically accelerates the pipeline by identifying the strongest signals, evaluating them against ASME's core metrics, and notifying you when a candidate is worth a human review.
+            <span style="color: var(--text-muted); font-size: 13.5px; font-style: italic;">
+              Future versions of this prototype could be upgraded to run 24 hours a day, continuously analyzing hundreds of organizations and autonomously notifying you when a candidate scores high enough for human review.
+            </span>
           </div>
           <div class="flow-graphic">
             <div class="flow-step">
-              <span class="icon">🔍</span>
+              <span class="icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              </span>
               <span class="text">1. Input URL</span>
             </div>
             <div class="flow-arrow">→</div>
             <div class="flow-step">
-              <span class="icon">🤖</span>
+              <span class="icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+              </span>
               <span class="text">2. AI Researches & Grades</span>
             </div>
             <div class="flow-arrow">→</div>
             <div class="flow-step highlight">
-              <span class="icon">🧑‍💻</span>
+              <span class="icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              </span>
               <span class="text">3. Human Review</span>
             </div>
           </div>
