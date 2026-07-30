@@ -255,20 +255,19 @@ function createTableRowElement(venture) {
     let scoreHtml = '';
     
     if (isPending) {
-        scoreHtml = `<span style="color: var(--text-muted)">Pending</span>`;
+        scoreHtml = `<div class="score-badge" style="background-color: var(--text-muted); display: inline-block;">Pending</div>`;
     } else {
         const score = parseFloat(venture.overall_score).toFixed(1);
         const color = getScoreColor(score);
         const label = getScoreLabel(score);
-        scoreHtml = `<span style="color: ${color}; font-weight: 600;">${score}</span> <span style="color: var(--text-muted); font-size: 12px;">(${label})</span>`;
+        scoreHtml = `<div class="score-badge" style="background-color: ${color}; display: inline-block;">${score} — ${label}</div>`;
     }
 
     tr.innerHTML = `
         <td style="font-weight: 500;">${escapeHtml(venture.name)}</td>
         <td>${escapeHtml(venture.sector || '-')}</td>
-        <td>${escapeHtml(venture.funding_stage || '-')}</td>
+        <td style="color: var(--text-secondary); max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(venture.rationale || (isPending ? 'Analysis in progress...' : '-'))}</td>
         <td>${scoreHtml}</td>
-        <td>${isPending ? '🔄 Analyzing' : '✅ Scored'}</td>
     `;
     return tr;
 }
