@@ -37,9 +37,13 @@
                     </button>
                 </div>
             </div>
-            <div class="controls-right">
-                <button id="seedBtn" class="btn btn-seed">Seed Ventures</button>
-                <button id="addVentureBtn" class="btn btn-primary">+ Add Venture</button>
+            <div class="controls-right" style="display: flex; gap: 12px; align-items: center;">
+                <div id="suggestionsContainer" style="display: flex; gap: 8px; margin-right: 8px;">
+                    <span style="font-size: 13px; color: var(--text-muted); align-self: center; margin-right: 4px;">Try an example:</span>
+                    <button class="btn btn-secondary suggestion-btn" style="font-size: 13px; padding: 6px 12px;" data-name="Form Energy" data-url="https://formenergy.com">Form Energy</button>
+                    <button class="btn btn-secondary suggestion-btn" style="font-size: 13px; padding: 6px 12px;" data-name="Machina Labs" data-url="https://machinalabs.ai">Machina Labs</button>
+                </div>
+                <button id="addVentureBtn" class="btn btn-primary">+ Add Custom Venture</button>
             </div>
         </div>
 
@@ -121,25 +125,26 @@
         <div class="modal-backdrop"></div>
         <div class="modal-content" style="max-width: 600px;">
             <button class="close-btn" id="closeGuideBtn">&times;</button>
-            <h2 style="margin-bottom: 16px; color: var(--text-primary);">Welcome to the ASME AI Screener</h2>
+            <h2 style="margin-bottom: 16px; color: var(--text-primary);">Automating Venture Intelligence</h2>
             
             <div style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px;">
-                <p style="margin-bottom: 12px;">This platform is an autonomous AI agent designed to evaluate deep-tech and hardware startups precisely how <strong>ASME Ventures</strong> does.</p>
-                <p style="margin-bottom: 12px;">The AI scours the web to research a company and scores it on a 1-5 scale across 5 specific metrics extracted directly from ASME Ventures' public investment thesis:</p>
+                <p style="margin-bottom: 12px;"><strong>Imagine a venture analyst that works 24/7 without taking a break.</strong></p>
+                <p style="margin-bottom: 12px;">Instead of paying an analyst to scour the internet 8 hours a day, this AI agent autonomously identifies, researches, and evaluates potential deep-tech candidates. It drastically cuts research costs, boosts productivity, and alerts your team the moment a high-signal candidate is found—so you can act earlier and capture more value.</p>
                 
+                <p style="margin-bottom: 12px; color: var(--text-primary);"><strong>For this demo, the AI is scoring ventures against 5 key ASME metrics:</strong></p>
                 <ul style="margin-bottom: 16px; padding-left: 20px; color: var(--text-primary);">
-                    <li style="margin-bottom: 8px;"><strong>Focus Area Alignment:</strong> Do they fit into Digital Solutions, Intelligent Automation, Hardware, Energy, or Safety Tech?</li>
-                    <li style="margin-bottom: 8px;"><strong>Built World Impact:</strong> Do they advance human progress in the physical world and drive industrial transformation?</li>
-                    <li style="margin-bottom: 8px;"><strong>Engineering Innovation:</strong> Do they possess deep operational intelligence and engineering credibility?</li>
-                    <li style="margin-bottom: 8px;"><strong>Early-Stage Fit:</strong> Are they an early-stage startup?</li>
-                    <li style="margin-bottom: 8px;"><strong>ASME Synergy:</strong> Can they benefit from ASME's global mechanical engineering network?</li>
+                    <li style="margin-bottom: 8px;"><strong>Focus Area Alignment:</strong> Digital, Automation, Hardware, Energy, or Safety.</li>
+                    <li style="margin-bottom: 8px;"><strong>Built World Impact:</strong> Advancing physical world infrastructure.</li>
+                    <li style="margin-bottom: 8px;"><strong>Engineering Innovation:</strong> Deep operational and technical credibility.</li>
+                    <li style="margin-bottom: 8px;"><strong>Early-Stage Fit:</strong> Optimal startup stage viability.</li>
+                    <li style="margin-bottom: 8px;"><strong>ASME Synergy:</strong> Benefiting from a global mechanical engineering network.</li>
                 </ul>
 
-                <p style="margin-bottom: 16px;"><strong>How to use it:</strong> Browse the pre-seeded companies, or click the <strong style="color: var(--accent-color);">+ Add Venture</strong> button to run a live AI analysis on a company of your choice (e.g., <em>Boston Metal</em> or <em>Form Energy</em>). The AI takes about 20 seconds to crawl the web, extract signals, and generate a graded rationale.</p>
+                <p style="margin-bottom: 16px;"><strong>See it in action:</strong> Click a "Suggested" button or add your own venture to watch the AI crawl the web, synthesize a massive report into actionable insights, and grade the company in just 20 seconds.</p>
             </div>
             
             <div class="form-actions" style="justify-content: flex-end;">
-                <button id="getStartedBtn" class="btn btn-primary">Try it out →</button>
+                <button id="getStartedBtn" class="btn btn-primary">Experience the Magic →</button>
             </div>
         </div>
     </div>

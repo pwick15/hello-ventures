@@ -14,7 +14,7 @@ const loadingState = document.getElementById("loadingState");
 const emptyState = document.getElementById("emptyState");
 const searchInput = document.getElementById("searchInput");
 const sortSelect = document.getElementById("sortSelect");
-const seedBtn = document.getElementById("seedBtn");
+const suggestionsContainer = document.getElementById("suggestionsContainer");
 const addVentureBtn = document.getElementById("addVentureBtn");
 
 const detailModal = document.getElementById("detailModal");
@@ -90,7 +90,17 @@ sortSelect.addEventListener("change", (e) => {
   renderVentures();
 });
 
-seedBtn.addEventListener("click", seedVentures);
+document.querySelectorAll(".suggestion-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const name = btn.getAttribute("data-name");
+    const url = btn.getAttribute("data-url");
+    btn.disabled = true;
+    btn.textContent = "Analyzing...";
+    analyzeVentureTrigger(name, url, "").then(() => {
+        btn.style.display = "none";
+    });
+  });
+});
 addVentureBtn.addEventListener("click", openAddForm);
 
 closeDetailBtn.addEventListener("click", closeModal);
@@ -448,58 +458,58 @@ function closeModal() {
   guideModal.classList.add("hidden");
 }
 
+async function analyzeVentureTrigger(name, website, description) {
+  // Create a temporary pending venture card instantly
+  const tempId = Date.now();
+  const pendingVenture = {
+    id: tempId,
+    name: name,
+    website: website,
+    sector: "AI Analysis in progress...",
+    rationale: "Crawling the web, extracting signals, and grading against ASME criteria...",
+    status: "pending",
+    overall_score: null
+  };
+  
+  ventures.unshift(pendingVenture);
+  renderVentures();
+
+  try {
+    const res = await fetch(`${API_BASE}/analyze`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, website, description: description || "" }),
+    });
+
+    if (res.ok) {
+      const updatedVenture = await res.json();
+      ventures = ventures.map(v => v.id === tempId ? updatedVenture : v);
+      sortVentures();
+      renderVentures();
+    } else {
+      alert("Error analyzing venture.");
+      ventures = ventures.filter(v => v.id !== tempId);
+      renderVentures();
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Network error analyzing venture.");
+    ventures = ventures.filter(v => v.id !== tempId);
+    renderVentures();
+  }
+}
+
 async function submitVenture(e) {
   e.preventDefault();
   const name = document.getElementById("ventureName").value;
   const website = document.getElementById("ventureWebsite").value;
   const description = document.getElementById("ventureDescription").value;
 
-  submitVentureBtn.disabled = true;
-  addLoadingState.classList.remove("hidden");
-
-  try {
-    const res = await fetch(`${API_BASE}/analyze`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, website, description }),
-    });
-
-    if (res.ok) {
-      closeModal();
-      await fetchVentures();
-    } else {
-      alert("Error analyzing venture.");
-      submitVentureBtn.disabled = false;
-      addLoadingState.classList.add("hidden");
-    }
-  } catch (err) {
-    console.error(err);
-    alert("Network error analyzing venture.");
-    submitVentureBtn.disabled = false;
-    addLoadingState.classList.add("hidden");
-  }
+  closeModal();
+  analyzeVentureTrigger(name, website, description);
 }
 
-async function seedVentures() {
-  seedBtn.disabled = true;
-  const originalText = seedBtn.textContent;
-  seedBtn.textContent = "Seeding...";
-
-  try {
-    const res = await fetch(`${API_BASE}/seed`, { method: "POST" });
-    if (res.ok) {
-      await fetchVentures();
-    } else {
-      alert("Failed to seed ventures.");
-    }
-  } catch (err) {
-    console.error(err);
-    alert("Error seeding ventures.");
-  } finally {
-    seedBtn.disabled = false;
-    seedBtn.textContent = originalText;
-  }
-}
+// Removed seedVentures logic for stakeholder demo
 
 async function deleteVenture(id) {
   if (!confirm("Are you sure you want to delete this venture?")) return;
