@@ -230,11 +230,11 @@ function createCardElement(venture) {
 
     card.innerHTML = `
         <div class="card-header">
-            <div>
-                <h3 class="card-title">${escapeHtml(venture.name)}</h3>
-                <span class="badge sector-badge">${escapeHtml(venture.sector || 'Unknown Sector')}</span>
-            </div>
+            <h3 class="card-title" style="margin-bottom: 0;">${escapeHtml(venture.name)}</h3>
             ${scoreHtml}
+        </div>
+        <div class="card-sector">
+            ${escapeHtml(venture.sector || 'Unknown Sector')}
         </div>
         <div class="card-meta">
             ${escapeHtml(venture.location || 'Unknown Location')} • Founded ${venture.founding_year || 'Unknown'} • ${escapeHtml(venture.funding_stage || 'Unknown Stage')}

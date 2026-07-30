@@ -277,7 +277,19 @@ input:focus, select:focus, textarea:focus {
 
 .card-title {
     font-size: 18px;
-    margin-bottom: 4px;
+    margin-bottom: 0;
+}
+
+.card-sector {
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    width: 100%;
 }
 
 .badge {
