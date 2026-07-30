@@ -7,7 +7,11 @@ pool = None
 async def get_pool():
     global pool
     if not pool:
-        pool = await asyncpg.create_pool(DATABASE_URL)
+        # Supabase requires SSL, but local postgres doesn't
+        if "localhost" not in DATABASE_URL and "127.0.0.1" not in DATABASE_URL:
+            pool = await asyncpg.create_pool(DATABASE_URL, ssl="require")
+        else:
+            pool = await asyncpg.create_pool(DATABASE_URL)
     return pool
 
 async def init_db():
