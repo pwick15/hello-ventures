@@ -23,8 +23,14 @@ const addVentureForm = document.getElementById('addVentureForm');
 const addLoadingState = document.getElementById('addLoadingState');
 const submitVentureBtn = document.getElementById('submitVentureBtn');
 
-// API Base URL (empty for relative to host)
-const API_BASE = '/api/ventures';
+const guideModal = document.getElementById('guideModal');
+const closeGuideBtn = document.getElementById('closeGuideBtn');
+const guideBtn = document.getElementById('guideBtn');
+const getStartedBtn = document.getElementById('getStartedBtn');
+
+// API Base URL (Dynamic for local vs Cloudflare/Cloud Run deployments)
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API_BASE = isLocal ? '/api/ventures' : 'https://YOUR_BACKEND_URL.run.app/api/ventures';
 
 // Score mappings
 const SCORE_COLORS = {
@@ -81,11 +87,27 @@ addVentureBtn.addEventListener('click', openAddForm);
 closeDetailBtn.addEventListener('click', closeModal);
 closeAddBtn.addEventListener('click', closeModal);
 cancelAddBtn.addEventListener('click', closeModal);
+closeGuideBtn.addEventListener('click', closeModal);
+
+guideBtn.addEventListener('click', () => {
+    guideModal.classList.remove('hidden');
+});
+getStartedBtn.addEventListener('click', () => {
+    closeModal();
+    // Prompt them to add a venture by opening the form
+    setTimeout(() => openAddForm(), 150);
+});
 
 // Close modals on backdrop click
 document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
     backdrop.addEventListener('click', closeModal);
 });
+
+// Check if user has seen guide
+if (!localStorage.getItem('hasSeenGuide')) {
+    localStorage.setItem('hasSeenGuide', 'true');
+    guideModal.classList.remove('hidden');
+}
 
 addVentureForm.addEventListener('submit', submitVenture);
 
@@ -352,6 +374,7 @@ function openAddForm() {
 function closeModal() {
     detailModal.classList.add('hidden');
     addModal.classList.add('hidden');
+    guideModal.classList.add('hidden');
 }
 
 async function submitVenture(e) {
