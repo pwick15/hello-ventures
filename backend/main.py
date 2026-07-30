@@ -1,6 +1,7 @@
 import json
 import asyncio
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
@@ -12,6 +13,15 @@ from backend.pipeline.graph import pipeline
 from backend.seed_data import SEED_VENTURES
 
 app = FastAPI(title="ASME Ventures - AI Venture Screener")
+
+# Allow Cloudflare frontend to talk to Cloud Run backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.on_event("startup")
 async def startup():
