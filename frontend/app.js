@@ -228,6 +228,8 @@ function sortVentures() {
 }
 
 function renderVentures() {
+  updateSuggestionsVisibility();
+
   const filtered = ventures.filter((v) => {
     const searchStr = currentSearchFilter;
     if (!searchStr) return true;
@@ -595,4 +597,27 @@ function escapeHtml(unsafe) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+function updateSuggestionsVisibility() {
+  if (!suggestionsContainer) return;
+  const existingNames = ventures.map(v => v.name.toLowerCase());
+  const suggestionBtns = document.querySelectorAll(".suggestion-btn");
+  let anyVisible = false;
+  
+  suggestionBtns.forEach(btn => {
+    const btnName = btn.getAttribute("data-name").toLowerCase();
+    if (existingNames.includes(btnName)) {
+      btn.style.display = "none";
+    } else {
+      btn.style.display = "inline-block";
+      anyVisible = true;
+    }
+  });
+  
+  if (!anyVisible) {
+    suggestionsContainer.style.display = "none";
+  } else {
+    suggestionsContainer.style.display = "flex";
+  }
 }
