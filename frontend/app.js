@@ -108,6 +108,13 @@ const driver = window.driver.js.driver;
 const tour = driver({
   showProgress: true,
   animate: true,
+  onHighlightStarted: () => {
+    document.body.classList.add('tour-active');
+  },
+  onDestroyStarted: () => {
+    document.body.classList.remove('tour-active');
+    tour.destroy();
+  },
   steps: [
     {
       popover: {
