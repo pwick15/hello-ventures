@@ -715,13 +715,3 @@ input:focus, select:focus, textarea:focus {
 .driver-overlay {
     opacity: 0.85 !important;
 }
-
-/* Targeted blur that avoids blurring the highlighted interactive elements */
-body.tour-active .app-header,
-body.tour-active .venture-grid,
-body.tour-active .venture-table-container,
-body.tour-active .empty-state,
-body.tour-active .loading-state {
-    filter: blur(5px);
-    transition: filter 0.3s ease;
-}
