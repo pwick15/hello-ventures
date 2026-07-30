@@ -26,11 +26,11 @@ SCORE_MAX = 5
 
 # Scoring weights (must sum to 1.0) — adjustable via API
 SCORING_WEIGHTS = {
-    "technology_focus": 0.25,       # Deep-tech / hardware alignment
-    "reindustrialization": 0.25,    # Impact on essential industries
-    "engineering_ip": 0.20,         # IP strength + technical credibility
-    "stage_fit": 0.15,              # Early→growth stage alignment
-    "geographic_reach": 0.15,       # Global / multi-market presence
+    "focus_area_alignment": 0.25,        # Fits the 5 specific tech areas
+    "built_world_impact": 0.25,     # Advance human progress in the built world
+    "engineering_innovation": 0.20, # Intersection of engineering and innovation
+    "early_stage_fit": 0.15,        # Early-stage focus
+    "asme_synergy": 0.15,           # Can leverage ASME's domain expertise & network
 }
 
 SCORE_LABELS = {
@@ -46,10 +46,14 @@ MAX_ENRICHMENT_ROUNDS = 3
 
 # --- ASME Context ---
 ASME_CONTEXT = """
-ASME Ventures is the strategic venture arm of the American Society of Mechanical Engineers (ASME).
-They support founders building breakthrough engineering and deep-tech solutions, specifically
-focused on reindustrializing essential industries. Target sectors include: hardware, energy,
-robotics, advanced manufacturing, materials, and physical-world engineering technologies.
-Beyond capital, ASME provides domain expertise, standards alignment, and engineering validation.
-Stage focus: early-stage to growth deep-tech startups transitioning from R&D to commercial deployment.
+ASME Ventures is a wholly owned, for-profit subsidiary of the American Society of Mechanical Engineers (ASME).
+We invest in visionary founders and breakthrough technologies that advance human progress in the built world.
+Backed by over a century of leadership in mechanical engineering, we bring deep domain expertise and a global network.
+
+Areas of Focus: Early-stage startups at the intersection of engineering and innovation.
+- Digital Solutions: Advanced tools that amplify technical expertise and improve outcomes.
+- Intelligent Automation: Next generation robotics, autonomous systems, and process optimization.
+- Hardware Design & Operations: Smarter engineering tools and deep operational intelligence.
+- Advanced Energy & Storage: Sustainable technologies that power the next wave of industrial transformation.
+- Next-Gen Safety Tech: Enhancing human-AI collaboration, inspection and safety.
 """

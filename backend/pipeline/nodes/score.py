@@ -6,11 +6,11 @@ from backend.pipeline.llm import get_llm
 from backend.pipeline.prompts import SCORING_PROMPT
 
 class VentureScores(BaseModel):
-    technology_focus: int = Field(description="1-5: Deep-tech/hardware alignment")
-    reindustrialization: int = Field(description="1-5: Potential to modernize essential industries")
-    engineering_ip: int = Field(description="1-5: Engineering IP strength and credibility")
-    stage_fit: int = Field(description="1-5: Stage alignment with ASME target")
-    geographic_reach: int = Field(description="1-5: Global/multi-market presence")
+    focus_area_alignment: int = Field(description="1-5: Alignment with Digital Solutions, Intelligent Automation, Hardware, Energy, or Safety Tech")
+    built_world_impact: int = Field(description="1-5: Potential to advance human progress in the built world and industrial transformation")
+    engineering_innovation: int = Field(description="1-5: Intersection of engineering and innovation, deep operational intelligence")
+    early_stage_fit: int = Field(description="1-5: Alignment with early-stage investment focus")
+    asme_synergy: int = Field(description="1-5: Ability to leverage ASME's domain expertise and global network")
 
 async def score_node(state: VentureState) -> dict:
     llm = get_llm(VentureScores)

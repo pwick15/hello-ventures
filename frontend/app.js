@@ -56,11 +56,11 @@ function getScoreLabel(score) {
 
 // Format sub-score names
 const SCORE_LABELS = {
-    technology_focus: 'Technology Focus',
-    reindustrialization: 'Reindustrialization',
-    engineering_ip: 'Engineering IP',
-    stage_fit: 'Stage Fit',
-    geographic_reach: 'Geographic Reach'
+    focus_area_alignment: 'Focus Area Alignment',
+    built_world_impact: 'Built World Impact',
+    engineering_innovation: 'Engineering Innovation',
+    early_stage_fit: 'Early-Stage Fit',
+    asme_synergy: 'ASME Synergy'
 };
 
 // Event Listeners

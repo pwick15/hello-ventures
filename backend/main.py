@@ -24,11 +24,11 @@ class AnalyzeRequest(BaseModel):
     description: Optional[str] = None
 
 class WeightsUpdate(BaseModel):
-    technology_focus: float
-    reindustrialization: float
-    engineering_ip: float
-    stage_fit: float
-    geographic_reach: float
+    focus_area_alignment: float
+    built_world_impact: float
+    engineering_innovation: float
+    early_stage_fit: float
+    asme_synergy: float
 
 # --- API Routes ---
 @app.get("/api/ventures")
@@ -166,14 +166,14 @@ async def get_weights():
 
 @app.put("/api/config/weights")
 async def update_weights(weights: WeightsUpdate):
-    total = weights.technology_focus + weights.reindustrialization + weights.engineering_ip + weights.stage_fit + weights.geographic_reach
+    total = weights.focus_area_alignment + weights.built_world_impact + weights.engineering_innovation + weights.early_stage_fit + weights.asme_synergy
     if abs(total - 1.0) > 0.01:
         raise HTTPException(status_code=400, detail=f"Weights must sum to 1.0, got {total}")
-    SCORING_WEIGHTS["technology_focus"] = weights.technology_focus
-    SCORING_WEIGHTS["reindustrialization"] = weights.reindustrialization
-    SCORING_WEIGHTS["engineering_ip"] = weights.engineering_ip
-    SCORING_WEIGHTS["stage_fit"] = weights.stage_fit
-    SCORING_WEIGHTS["geographic_reach"] = weights.geographic_reach
+    SCORING_WEIGHTS["focus_area_alignment"] = weights.focus_area_alignment
+    SCORING_WEIGHTS["built_world_impact"] = weights.built_world_impact
+    SCORING_WEIGHTS["engineering_innovation"] = weights.engineering_innovation
+    SCORING_WEIGHTS["early_stage_fit"] = weights.early_stage_fit
+    SCORING_WEIGHTS["asme_synergy"] = weights.asme_synergy
     return {"weights": SCORING_WEIGHTS}
 
 # --- Static Files ---
