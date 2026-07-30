@@ -6,6 +6,21 @@
     <title>ASME Ventures — AI Venture Screener</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
+    <style>
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        .highlight-box {
+            animation: pulseGlow 2s infinite;
+            border: 1px dashed var(--accent-color);
+            border-radius: 8px;
+            padding: 6px 12px;
+            background: rgba(16, 185, 129, 0.05);
+        }
+    </style>
 </head>
 <body>
     <header class="app-header">
@@ -38,10 +53,10 @@
                 </div>
             </div>
             <div class="controls-right" style="display: flex; gap: 12px; align-items: center;">
-                <div id="suggestionsContainer" style="display: flex; gap: 8px; margin-right: 8px;">
-                    <span style="font-size: 13px; color: var(--text-muted); align-self: center; margin-right: 4px;">Try an example:</span>
-                    <button class="btn btn-secondary suggestion-btn" style="font-size: 13px; padding: 6px 12px;" data-name="Form Energy" data-url="https://formenergy.com">Form Energy</button>
-                    <button class="btn btn-secondary suggestion-btn" style="font-size: 13px; padding: 6px 12px;" data-name="Machina Labs" data-url="https://machinalabs.ai">Machina Labs</button>
+                <div id="suggestionsContainer" class="highlight-box" style="display: flex; gap: 8px; margin-right: 8px;">
+                    <span style="font-size: 13px; font-weight: 600; color: var(--accent-color); align-self: center; margin-right: 4px;">✨ Try an example:</span>
+                    <button class="btn btn-secondary suggestion-btn" style="font-size: 13px; padding: 4px 10px; border-color: var(--accent-color); color: var(--text-primary);" data-name="Form Energy" data-url="https://formenergy.com">Form Energy</button>
+                    <button class="btn btn-secondary suggestion-btn" style="font-size: 13px; padding: 4px 10px; border-color: var(--accent-color); color: var(--text-primary);" data-name="Machina Labs" data-url="https://machinalabs.ai">Machina Labs</button>
                 </div>
                 <button id="addVentureBtn" class="btn btn-primary">+ Add Custom Venture</button>
             </div>
@@ -120,42 +135,7 @@
         </div>
     </div>
 
-    <!-- Onboarding / Guide Modal -->
-    <div id="guideModal" class="modal hidden">
-        <div class="modal-backdrop"></div>
-        <div class="modal-content" style="max-width: 600px;">
-            <button class="close-btn" id="closeGuideBtn">&times;</button>
-            <h2 style="margin-bottom: 16px; color: var(--text-primary);">Automating Venture Intelligence</h2>
-            
-            <div style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px;">
-                <p style="margin-bottom: 12px;"><strong>Imagine a venture analyst that works 24/7 without taking a break.</strong></p>
-                <p style="margin-bottom: 12px;">Instead of paying an analyst to scour the internet 8 hours a day, this application drastically cuts research costs and boosts productivity by fully automating the candidate screening pipeline.</p>
-                
-                <p style="margin-bottom: 8px; color: var(--text-primary);"><strong>How it works:</strong></p>
-                <ol style="margin-bottom: 16px; padding-left: 20px;">
-                    <li style="margin-bottom: 8px;"><strong>Input:</strong> Provide just the name and URL of a company.</li>
-                    <li style="margin-bottom: 8px;"><strong>Research:</strong> An autonomous AI agent immediately scours the internet, reading their website, LinkedIn, and news articles to extract structured data.</li>
-                    <li style="margin-bottom: 8px;"><strong>Analysis:</strong> The agent deeply analyzes that data and evaluates it against ASME Ventures' 5 core investment metrics:
-                        <ul style="margin-top: 6px; padding-left: 18px; color: var(--text-primary); list-style-type: circle;">
-                            <li><strong>Focus Area Alignment:</strong> Digital, Automation, Hardware, Energy, or Safety.</li>
-                            <li><strong>Built World Impact:</strong> Advancing physical world infrastructure.</li>
-                            <li><strong>Engineering Innovation:</strong> Deep operational and technical credibility.</li>
-                            <li><strong>Early-Stage Fit:</strong> Optimal startup stage viability.</li>
-                            <li><strong>ASME Synergy:</strong> Benefiting from our global mechanical engineering network.</li>
-                        </ul>
-                    </li>
-                    <li style="margin-bottom: 8px;"><strong>Grading:</strong> The AI grades the venture on a 1-5 scale and writes a customized rationale.</li>
-                </ol>
-
-                <p style="margin-bottom: 16px; font-weight: 500; color: var(--text-primary);">And just like that—you've completely analyzed a venture in under 20 seconds.</p>
-            </div>
-            
-            <div class="form-actions" style="justify-content: flex-end;">
-                <button id="getStartedBtn" class="btn btn-primary">Experience the Magic →</button>
-            </div>
-        </div>
-    </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

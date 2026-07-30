@@ -28,10 +28,7 @@ const addVentureForm = document.getElementById("addVentureForm");
 const addLoadingState = document.getElementById("addLoadingState");
 const submitVentureBtn = document.getElementById("submitVentureBtn");
 
-const guideModal = document.getElementById("guideModal");
-const closeGuideBtn = document.getElementById("closeGuideBtn");
 const guideBtn = document.getElementById("guideBtn");
-const getStartedBtn = document.getElementById("getStartedBtn");
 
 // API Base URL (Dynamic for local vs Cloudflare/Cloud Run deployments)
 const isLocal =
@@ -106,18 +103,43 @@ addVentureBtn.addEventListener("click", openAddForm);
 closeDetailBtn.addEventListener("click", closeModal);
 closeAddBtn.addEventListener("click", closeModal);
 cancelAddBtn.addEventListener("click", closeModal);
-closeGuideBtn.addEventListener("click", closeModal);
-
-viewCardBtn.addEventListener("click", () => setViewMode("cards"));
-viewTableBtn.addEventListener("click", () => setViewMode("table"));
+// Interactive Tour setup
+const driver = window.driver.js.driver;
+const tour = driver({
+  showProgress: true,
+  animate: true,
+  steps: [
+    {
+      popover: {
+        title: 'Automating Venture Intelligence',
+        description: '<strong>Imagine a venture analyst that works 24/7.</strong><br><br>Instead of paying an analyst to scour the internet 8 hours a day, this AI agent autonomously identifies, researches, and evaluates potential deep-tech candidates.<br><br><strong>How it works:</strong><br>1. <strong>Input:</strong> Provide a URL.<br>2. <strong>Research:</strong> AI scours the web.<br>3. <strong>Analysis:</strong> AI evaluates against 5 ASME core metrics.<br>4. <strong>Grading:</strong> Generates a 1-5 score and rationale in 20 seconds.',
+        side: "over",
+        align: 'center'
+      }
+    },
+    {
+      element: '#suggestionsContainer',
+      popover: {
+        title: '1. Try an Example',
+        description: 'Click one of these highlighted suggestions to watch the AI instantly crawl the web and fully analyze the company in real-time.',
+        side: "bottom",
+        align: 'start'
+      }
+    },
+    {
+      element: '#addVentureBtn',
+      popover: {
+        title: '2. Add Custom Venture',
+        description: 'Or, click here to add any custom startup you want. Give it a name and URL, and the AI will do the rest!',
+        side: "bottom",
+        align: 'end'
+      }
+    }
+  ]
+});
 
 guideBtn.addEventListener("click", () => {
-  guideModal.classList.remove("hidden");
-});
-getStartedBtn.addEventListener("click", () => {
-  closeModal();
-  // Prompt them to add a venture by opening the form
-  setTimeout(() => openAddForm(), 150);
+  tour.drive();
 });
 
 // Close modals on backdrop click
@@ -125,10 +147,13 @@ document.querySelectorAll(".modal-backdrop").forEach((backdrop) => {
   backdrop.addEventListener("click", closeModal);
 });
 
+viewCardBtn.addEventListener("click", () => setViewMode("cards"));
+viewTableBtn.addEventListener("click", () => setViewMode("table"));
+
 // Check if user has seen guide
-if (!localStorage.getItem("hasSeenGuide")) {
-  localStorage.setItem("hasSeenGuide", "true");
-  guideModal.classList.remove("hidden");
+if (!localStorage.getItem("hasSeenTour")) {
+  localStorage.setItem("hasSeenTour", "true");
+  setTimeout(() => tour.drive(), 500);
 }
 
 addVentureForm.addEventListener("submit", submitVenture);
@@ -455,7 +480,6 @@ function openAddForm() {
 function closeModal() {
   detailModal.classList.add("hidden");
   addModal.classList.add("hidden");
-  guideModal.classList.add("hidden");
 }
 
 async function analyzeVentureTrigger(name, website, description) {
