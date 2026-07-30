@@ -111,8 +111,30 @@ const tour = driver({
   steps: [
     {
       popover: {
-        title: 'Automating Venture Intelligence',
-        description: '<strong>Imagine a venture analyst that works 24/7.</strong><br><br>Instead of paying an analyst to scour the internet 8 hours a day, this AI agent autonomously identifies, researches, and evaluates potential deep-tech candidates.<br><br><strong>How it works:</strong><br>1. <strong>Input:</strong> Provide a URL.<br>2. <strong>Research:</strong> AI scours the web.<br>3. <strong>Analysis:</strong> AI evaluates against 5 ASME core metrics.<br>4. <strong>Grading:</strong> Generates a 1-5 score and rationale in 20 seconds.',
+        title: 'Augmenting Venture Intelligence',
+        description: `
+          <div style="margin-bottom: 16px;">
+            Imagine having a venture analyst running 24 hours a day, scanning through hundreds of organizations autonomously. 
+            <br><br>
+            This AI agent doesn't replace human decision-making—it drastically accelerates the pipeline by identifying the strongest signals, evaluating them against ASME's core metrics, and notifying you when a candidate is worth a human review.
+          </div>
+          <div class="flow-graphic">
+            <div class="flow-step">
+              <span class="icon">🔍</span>
+              <span class="text">1. Input URL</span>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <span class="icon">🤖</span>
+              <span class="text">2. AI Researches & Grades</span>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step highlight">
+              <span class="icon">🧑‍💻</span>
+              <span class="text">3. Human Review</span>
+            </div>
+          </div>
+        `,
         side: "over",
         align: 'center'
       }
