@@ -14,7 +14,7 @@
                 <h1>ASME Ventures <span class="subtitle">— AI Venture Screener</span></h1>
                 <p class="description">AI-driven pipeline to identify, screen, and rank potential venture partners.</p>
             </div>
-            <button id="guideBtn" class="btn btn-secondary" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);">ℹ️ How it Works</button>
+            <button id="guideBtn" class="help-btn" title="How it Works">?</button>
         </div>
     </header>
 
@@ -28,9 +28,13 @@
                     <option value="name_asc">Name A-Z</option>
                     <option value="sector">Sector</option>
                 </select>
+                <div class="view-toggle">
+                    <button id="viewCardBtn" class="btn btn-secondary active">Cards</button>
+                    <button id="viewTableBtn" class="btn btn-secondary">Table</button>
+                </div>
             </div>
             <div class="controls-right">
-                <button id="seedBtn" class="btn btn-secondary">Seed Ventures</button>
+                <button id="seedBtn" class="btn btn-seed">Seed Ventures</button>
                 <button id="addVentureBtn" class="btn btn-primary">+ Add Venture</button>
             </div>
         </div>
@@ -46,6 +50,23 @@
 
         <div id="ventureGrid" class="venture-grid">
             <!-- Cards injected via JS -->
+        </div>
+
+        <div id="ventureTableContainer" class="venture-table-container hidden">
+            <table class="venture-table">
+                <thead>
+                    <tr>
+                        <th>Venture</th>
+                        <th>Sector</th>
+                        <th>Stage</th>
+                        <th>Score</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="ventureTableBody">
+                    <!-- Rows injected via JS -->
+                </tbody>
+            </table>
         </div>
     </main>
 

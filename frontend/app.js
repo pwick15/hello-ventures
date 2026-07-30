@@ -2,9 +2,14 @@
 let ventures = [];
 let currentSortMode = 'score_desc';
 let currentSearchFilter = '';
+let currentViewMode = 'cards';
 
 // DOM Elements
 const ventureGrid = document.getElementById('ventureGrid');
+const ventureTableContainer = document.getElementById('ventureTableContainer');
+const ventureTableBody = document.getElementById('ventureTableBody');
+const viewCardBtn = document.getElementById('viewCardBtn');
+const viewTableBtn = document.getElementById('viewTableBtn');
 const loadingState = document.getElementById('loadingState');
 const emptyState = document.getElementById('emptyState');
 const searchInput = document.getElementById('searchInput');
@@ -89,6 +94,9 @@ closeAddBtn.addEventListener('click', closeModal);
 cancelAddBtn.addEventListener('click', closeModal);
 closeGuideBtn.addEventListener('click', closeModal);
 
+viewCardBtn.addEventListener('click', () => setViewMode('cards'));
+viewTableBtn.addEventListener('click', () => setViewMode('table'));
+
 guideBtn.addEventListener('click', () => {
     guideModal.classList.remove('hidden');
 });
@@ -168,13 +176,15 @@ function renderVentures() {
     });
 
     ventureGrid.innerHTML = '';
+    ventureTableBody.innerHTML = '';
 
     if (filtered.length === 0) {
         if (ventures.length === 0) {
             emptyState.classList.remove('hidden');
         } else {
-            emptyState.classList.add('hidden'); // hidden because just filtered out
+            emptyState.classList.add('hidden');
             ventureGrid.innerHTML = '<p style="color:var(--text-secondary); grid-column: 1/-1; text-align: center;">No matches found.</p>';
+            ventureTableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No matches found.</td></tr>';
         }
         return;
     }
@@ -182,7 +192,23 @@ function renderVentures() {
     emptyState.classList.add('hidden');
     filtered.forEach(venture => {
         ventureGrid.appendChild(createCardElement(venture));
+        ventureTableBody.appendChild(createTableRowElement(venture));
     });
+}
+
+function setViewMode(mode) {
+    currentViewMode = mode;
+    if (mode === 'cards') {
+        viewCardBtn.classList.add('active');
+        viewTableBtn.classList.remove('active');
+        ventureGrid.classList.remove('hidden');
+        ventureTableContainer.classList.add('hidden');
+    } else {
+        viewTableBtn.classList.add('active');
+        viewCardBtn.classList.remove('active');
+        ventureTableContainer.classList.remove('hidden');
+        ventureGrid.classList.add('hidden');
+    }
 }
 
 function createCardElement(venture) {
@@ -219,6 +245,32 @@ function createCardElement(venture) {
     `;
 
     return card;
+}
+
+function createTableRowElement(venture) {
+    const tr = document.createElement('tr');
+    tr.onclick = () => openDetail(venture.id);
+
+    const isPending = venture.status === 'pending' || !venture.overall_score;
+    let scoreHtml = '';
+    
+    if (isPending) {
+        scoreHtml = `<span style="color: var(--text-muted)">Pending</span>`;
+    } else {
+        const score = parseFloat(venture.overall_score).toFixed(1);
+        const color = getScoreColor(score);
+        const label = getScoreLabel(score);
+        scoreHtml = `<span style="color: ${color}; font-weight: 600;">${score}</span> <span style="color: var(--text-muted); font-size: 12px;">(${label})</span>`;
+    }
+
+    tr.innerHTML = `
+        <td style="font-weight: 500;">${escapeHtml(venture.name)}</td>
+        <td>${escapeHtml(venture.sector || '-')}</td>
+        <td>${escapeHtml(venture.funding_stage || '-')}</td>
+        <td>${scoreHtml}</td>
+        <td>${isPending ? '🔄 Analyzing' : '✅ Scored'}</td>
+    `;
+    return tr;
 }
 
 async function openDetail(ventureId) {

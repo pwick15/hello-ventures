@@ -134,6 +134,47 @@ input:focus, select:focus, textarea:focus {
     background-color: var(--border-color);
 }
 
+.btn-seed {
+    background-color: #3730a3;
+    color: white;
+    border: none;
+}
+
+.btn-seed:hover {
+    background-color: #4338ca;
+}
+
+.help-btn {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.help-btn:hover {
+    color: white;
+    border-color: var(--text-secondary);
+    background: rgba(255,255,255,0.05);
+}
+
+.view-toggle {
+    display: flex;
+    gap: 4px;
+}
+.view-toggle .btn.active {
+    background-color: var(--border-color);
+    color: white;
+}
+
 /* Grid */
 .venture-grid {
     display: grid;
@@ -151,6 +192,44 @@ input:focus, select:focus, textarea:focus {
     .venture-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* Table */
+.venture-table-container {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+.venture-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.venture-table th {
+    background-color: var(--bg-dark);
+    text-align: left;
+    padding: 14px 16px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.venture-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.venture-table tr:last-child td {
+    border-bottom: none;
+}
+
+.venture-table tr:hover {
+    background-color: rgba(255,255,255,0.02);
+    cursor: pointer;
 }
 
 /* Cards */
